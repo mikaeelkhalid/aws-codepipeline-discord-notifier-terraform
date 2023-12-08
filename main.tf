@@ -16,3 +16,24 @@ data "archive_file" "lambda_zip" {
 
   depends_on = [null_resource.install_lambda_function_packages]
 }
+
+# iam role for lambda function
+resource "aws_iam_role" "lambda_role" {
+  name = "${var.APP_NAME}-codepipeline-discord-lambda-role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
