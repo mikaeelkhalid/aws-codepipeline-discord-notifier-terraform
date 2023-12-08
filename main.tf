@@ -101,3 +101,20 @@ resource "aws_lambda_alias" "lambda_alias" {
   function_name    = aws_lambda_function.lambda.arn
   function_version = "$LATEST"
 }
+
+# eventbridge rule
+resource "aws_cloudwatch_event_rule" "pipeline_state_update" {
+  name        = "${var.APP_NAME}-discord-codepipeline-rule"
+  description = "capture state changes in all CodePipelines"
+
+  event_pattern = <<PATTERN
+  {
+    "detail-type": [
+        "CodePipeline Pipeline Execution State Change"
+    ],
+    "source": [
+        "aws.codepipeline"
+    ]
+ }
+PATTERN
+}
