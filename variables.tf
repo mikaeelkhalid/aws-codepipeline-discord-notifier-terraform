@@ -5,7 +5,7 @@ variable "LAMBDA_APP_NAME" {
 
 variable "DISCORD_WEBHOOK_URL" {
   description = "webhook URL provided by Discord."
-  default = "https://mikaeels.com"
+  default = "https://mikaeels.com" // replace with webhook URL provided by Discord
 }
 
 variable "DISCORD_CHANNEL" {
