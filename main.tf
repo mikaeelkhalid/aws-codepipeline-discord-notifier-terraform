@@ -19,7 +19,7 @@ data "archive_file" "lambda_zip" {
 
 # iam role for lambda function
 resource "aws_iam_role" "lambda_role" {
-  name = "${var.APP_NAME}-codepipeline-discord-lambda-role"
+  name = "${var.LAMBDA_APP_NAME}-codepipeline-discord-lambda-role"
 
   assume_role_policy = <<EOF
 {
@@ -40,7 +40,7 @@ EOF
 
 # iam policy for lambda function
 resource "aws_iam_role_policy" "lambda_role_policy" {
-  name = "${var.APP_NAME}-discord-codepipeline-lambda-role-policy"
+  name = "${var.LAMBDA_APP_NAME}-discord-codepipeline-lambda-role-policy"
   role = aws_iam_role.lambda_role.id
 
   policy = <<EOF
@@ -78,7 +78,7 @@ resource "aws_lambda_function" "lambda" {
   filename         = data.archive_file.lambda_zip.output_path
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   description      = "Posts a message to Discord channel '${var.DISCORD_CHANNEL}' every time there is an update to codepipeline execution."
-  function_name    = "${var.APP_NAME}-discord-codepipeline-lambda"
+  function_name    = "${var.LAMBDA_APP_NAME}-discord-codepipeline-lambda"
   role             = aws_iam_role.lambda_role.arn
   handler          = "handler.handle"
   runtime          = "nodejs14.x"
@@ -104,7 +104,7 @@ resource "aws_lambda_alias" "lambda_alias" {
 
 # eventbridge rule
 resource "aws_cloudwatch_event_rule" "pipeline_state_update" {
-  name        = "${var.APP_NAME}-discord-codepipeline-rule"
+  name        = "${var.LAMBDA_APP_NAME}-discord-codepipeline-rule"
   description = "capture state changes in all CodePipelines"
 
   event_pattern = <<PATTERN

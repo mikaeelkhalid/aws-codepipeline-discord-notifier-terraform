@@ -1,4 +1,4 @@
-variable "APP_NAME" {
+variable "LAMBDA_APP_NAME" {
   description = "lambda function name."
   default = "cicd-channel"
 }
