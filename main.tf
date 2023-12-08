@@ -37,3 +37,60 @@ resource "aws_iam_role" "lambda_role" {
 }
 EOF
 }
+
+# iam policy for lambda function
+resource "aws_iam_role_policy" "lambda_role_policy" {
+  name = "${var.APP_NAME}-discord-codepipeline-lambda-role-policy"
+  role = aws_iam_role.lambda_role.id
+
+  policy = <<EOF
+{
+  "Version" : "2012-10-17",
+  "Statement" : [{
+      "Sid": "WriteLogsToCloudWatch",
+      "Effect" : "Allow",
+      "Action" : [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource" : "arn:aws:logs:*:*:*"
+    }, {
+      "Sid": "AllowAccesstoPipeline",
+      "Effect" : "Allow",
+      "Action" : [
+        "codepipeline:GetPipeline",
+        "codepipeline:GetPipelineState",
+        "codepipeline:GetPipelineExecution",
+        "codepipeline:ListPipelineExecutions",
+        "codepipeline:ListActionTypes",
+        "codepipeline:ListPipelines"
+      ],
+      "Resource" : "*"
+    }
+  ]
+}
+EOF
+}
+
+# lambda function
+resource "aws_lambda_function" "lambda" {
+  filename         = data.archive_file.lambda_zip.output_path
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
+  description      = "Posts a message to Discord channel '${var.DISCORD_CHANNEL}' every time there is an update to codepipeline execution."
+  function_name    = "${var.APP_NAME}-discord-codepipeline-lambda"
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "handler.handle"
+  runtime          = "nodejs14.x"
+  timeout          = var.LAMBDA_TIMEOUT
+  memory_size      = var.LAMBDA_MEMORY_SIZE
+
+  environment {
+    variables = {
+      "DISCORD_WEBHOOK_URL" = var.DISCORD_WEBHOOK_URL
+      "DISCORD_CHANNEL"       = var.DISCORD_CHANNEL
+      "RELEVANT_STAGES"     = var.RELEVANT_STAGES
+      "REGION"              = var.REGION
+    }
+  }
+}
