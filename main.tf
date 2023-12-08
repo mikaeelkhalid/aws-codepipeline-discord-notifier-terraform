@@ -94,3 +94,10 @@ resource "aws_lambda_function" "lambda" {
     }
   }
 }
+
+# alias pointing to latest for lambda function
+resource "aws_lambda_alias" "lambda_alias" {
+  name             = "latest"
+  function_name    = aws_lambda_function.lambda.arn
+  function_version = "$LATEST"
+}
