@@ -128,3 +128,9 @@ resource "aws_lambda_permission" "allow_cloudwatch" {
   source_arn    = aws_cloudwatch_event_rule.pipeline_state_update.arn
   qualifier     = aws_lambda_alias.lambda_alias.name
 }
+
+# map event rule to trigger lambda function
+resource "aws_cloudwatch_event_target" "lambda_trigger" {
+  rule = aws_cloudwatch_event_rule.pipeline_state_update.name
+  arn  = aws_lambda_alias.lambda_alias.arn
+}
