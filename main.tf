@@ -118,3 +118,13 @@ resource "aws_cloudwatch_event_rule" "pipeline_state_update" {
  }
 PATTERN
 }
+
+# allow eventbridge to invoke lambda function
+resource "aws_lambda_permission" "allow_cloudwatch" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.lambda.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.pipeline_state_update.arn
+  qualifier     = aws_lambda_alias.lambda_alias.name
+}
