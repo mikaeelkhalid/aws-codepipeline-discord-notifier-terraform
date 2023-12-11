@@ -1,4 +1,4 @@
-# 🚀 AWS CodePipeline Discord Notifier
+# 🚀 AWS CodePipeline Discord Notifier using Terraform
 
 [![Mikaeel Khalid](https://badgen.now.sh/badge/by/mikaeelkhalid/purple)](https://github.com/mikaeelkhalid)
 
