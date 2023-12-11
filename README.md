@@ -8,6 +8,8 @@ This Terraform module sets up an AWS Lambda function that sends notifications to
 an update in the AWS CodePipeline executions. It is designed to help teams stay informed about their continuous integration and
 continuous deployment (CI/CD) pipeline status.
 
+![AWS CodePipeline Discord Notifier](architecture-diagram/AWS%20CodePipeline%20Discord%20Notifier.jpg)
+
 ## 📋 Prerequisites
 
 Before you can use this module, you need the following:
